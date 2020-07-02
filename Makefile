@@ -2,7 +2,7 @@ run:
 	go run main.go
 
 build: docs
-	go build main.go
+	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o go-gin-example .
 
 docs:
 	swag init
