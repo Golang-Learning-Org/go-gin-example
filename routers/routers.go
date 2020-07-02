@@ -7,8 +7,13 @@ import (
 	v1 "github.com/evanxzj/go-gin-example/routers/api/v1"
 
 	"github.com/gin-gonic/gin"
+
+	_ "github.com/evanxzj/go-gin-example/docs"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// InitRouter initialize routing information
 func InitRouter() *gin.Engine {
 	gin.SetMode(setting.RunMode)
 
@@ -19,6 +24,8 @@ func InitRouter() *gin.Engine {
 
 	// Auth
 	r.GET("/auth", api.GetAuth)
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	apiV1 := r.Group("/api/v1")
 	apiV1.Use(jwt.JWT())

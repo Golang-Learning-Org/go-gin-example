@@ -1,6 +1,10 @@
 run:
 	go run main.go
 
-build:
+build: docs
 	go build main.go
-	
+
+docs:
+	swag init
+
+.PHONY: run build docs
