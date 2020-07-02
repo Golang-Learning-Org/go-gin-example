@@ -1,17 +1,18 @@
 package v1
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 
 	"github.com/astaxie/beego/validation"
+	"github.com/gin-gonic/gin"
+	"github.com/unknwon/com"
 
 	"github.com/evanxzj/go-gin-example/models"
 	"github.com/evanxzj/go-gin-example/pkg/e"
+	"github.com/evanxzj/go-gin-example/pkg/logger"
 	"github.com/evanxzj/go-gin-example/pkg/setting"
 	"github.com/evanxzj/go-gin-example/pkg/util"
-	"github.com/gin-gonic/gin"
-	"github.com/unknwon/com"
 )
 
 func GetTags(c *gin.Context) {
@@ -65,7 +66,8 @@ func AddTag(c *gin.Context) {
 		// 如果有错误信息，证明验证没通过
 		// 打印错误信息
 		for _, err := range valid.Errors {
-			log.Println(err.Key, err.Message)
+			fmt.Println("xxxx")
+			logger.Error(err.Key, err.Message)
 		}
 	}
 

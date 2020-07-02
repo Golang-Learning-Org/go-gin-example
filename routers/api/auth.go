@@ -1,8 +1,9 @@
 package api
 
 import (
-	"log"
 	"net/http"
+
+	"github.com/evanxzj/go-gin-example/pkg/logger"
 
 	"github.com/evanxzj/go-gin-example/models"
 
@@ -42,7 +43,7 @@ func GetAuth(c *gin.Context) {
 		}
 	} else {
 		for _, err := range valid.Errors {
-			log.Println(err.Key, err.Message)
+			logger.Info(err.Key, err.Message)
 		}
 	}
 
