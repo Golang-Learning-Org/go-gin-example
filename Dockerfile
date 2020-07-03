@@ -25,8 +25,8 @@ ENTRYPOINT [ "/app/go-gin-example" ]
 
 # FROM scratch
 
-# WORKDIR $GOPATH/src/github.com/EDDYCJY/go-gin-example
-# COPY . $GOPATH/src/github.com/EDDYCJY/go-gin-example
+# WORKDIR $GOPATH/src/github.com/EvanXzj/go-gin-example
+# COPY . $GOPATH/src/github.com/EvanXzj/go-gin-example
 
 # EXPOSE 8000
 # CMD ["./go-gin-example"]
