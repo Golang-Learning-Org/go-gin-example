@@ -9,6 +9,9 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/evanxzj/go-gin-example/models"
+	"github.com/evanxzj/go-gin-example/pkg/logger"
+
 	"github.com/evanxzj/go-gin-example/pkg/setting"
 	"github.com/evanxzj/go-gin-example/routers"
 )
@@ -49,13 +52,16 @@ func main() {
 	// s.ListenAndServe()
 
 	//!  graceful shutdown with http.Shutdown
+	setting.Setup()
+	models.Setup()
+	logger.Setup()
 	router := routers.InitRouter()
 
 	s := &http.Server{
-		Addr:           fmt.Sprintf(":%d", setting.HTTPPort),
+		Addr:           fmt.Sprintf(":%d", setting.ServerSetting.HttpPort),
 		Handler:        router,
-		ReadTimeout:    setting.ReadTimeout,
-		WriteTimeout:   setting.WriteTimeout,
+		ReadTimeout:    setting.ServerSetting.ReadTimeout,
+		WriteTimeout:   setting.ServerSetting.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
 

@@ -19,36 +19,22 @@ type Model struct {
 	DeletedOn  int `json:"deleted_on"`
 }
 
-func init() {
-	var (
-		err                                                error
-		dialect, dbName, user, password, host, tablePrefix string
-	)
+// Setup initializes the database instance
+func Setup() {
+	var err error
 
-	sec, err := setting.Cfg.GetSection("database")
-	if err != nil {
-		log.Fatal(2, "Fail to get section 'database': %v", err)
-	}
-
-	dialect = sec.Key("DIALECT").String()
-	dbName = sec.Key("NAME").String()
-	user = sec.Key("USER").String()
-	password = sec.Key("PASSWORD").String()
-	host = sec.Key("HOST").String()
-	tablePrefix = sec.Key("TABLE_PREFIX").String()
-
-	db, err = gorm.Open(dialect, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		user,
-		password,
-		host,
-		dbName))
+	db, err = gorm.Open(setting.DatabaseSetting.Dialect, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		setting.DatabaseSetting.User,
+		setting.DatabaseSetting.Password,
+		setting.DatabaseSetting.Host,
+		setting.DatabaseSetting.Name))
 
 	if err != nil {
 		log.Println(err)
 	}
 
 	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
-		return tablePrefix + defaultTableName
+		return setting.DatabaseSetting.TablePrefix + defaultTableName
 	}
 
 	db.Callback().Create().Replace("gorm:update_time_stamp", updateTimeStampForCreateCallback)
@@ -58,7 +44,7 @@ func init() {
 	db.SingularTable(true)
 	db.LogMode(true)
 	db.DB().SetMaxIdleConns(10)
-	db.DB().SetMaxOpenConns(100)
+	db.DB().SetMaxOpenConns(setting.DatabaseSetting.ConnectionLimit)
 }
 
 func CloseDB() {

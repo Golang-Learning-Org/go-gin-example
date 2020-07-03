@@ -20,6 +20,7 @@ CREATE TABLE `blog_article` (
     `title` varchar(100) DEFAULT '' COMMENT '文章标题',
     `desc` varchar(255) DEFAULT '' COMMENT '简述',
     `content` text,
+    `cover_image_url` varchar(255) DEFAULT '' COMMENT '封面',
     `created_on` int(11) DEFAULT NULL,
     `created_by` varchar(100) DEFAULT '' COMMENT '创建人',
     `modified_on` int(10) unsigned DEFAULT '0' COMMENT '修改时间',
