@@ -20,3 +20,4 @@
 main
 go-gin-example
 runtime/upload/images
+runtime/export/*.xlsx

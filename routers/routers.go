@@ -3,6 +3,8 @@ package routers
 import (
 	"net/http"
 
+	"github.com/evanxzj/go-gin-example/pkg/export"
+
 	"github.com/evanxzj/go-gin-example/pkg/upload"
 
 	"github.com/evanxzj/go-gin-example/middleware/jwt"
@@ -31,6 +33,7 @@ func InitRouter() *gin.Engine {
 	// Upload Image
 	r.POST("/upload", api.UploadImage)
 	r.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
+	r.StaticFS("/export", http.Dir(export.GetExcelFullPath()))
 
 	// Swagger doc
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -43,6 +46,10 @@ func InitRouter() *gin.Engine {
 		apiV1.POST("/tags", v1.AddTag)
 		apiV1.PUT("/tags/:id", v1.EditTag)
 		apiV1.DELETE("/tags/:id", v1.DeleteTag)
+		//导出标签
+		apiV1.POST("/tags/export", v1.ExportTag)
+		//导入标签
+		apiV1.POST("/tags/import", v1.ImportTag)
 
 		// Articles API
 		apiV1.GET("/articles", v1.GetArticles)
