@@ -6,6 +6,7 @@ import (
 	"github.com/evanxzj/go-gin-example/models"
 
 	"github.com/astaxie/beego/validation"
+	"github.com/evanxzj/go-gin-example/pkg/app"
 	"github.com/evanxzj/go-gin-example/pkg/e"
 	"github.com/evanxzj/go-gin-example/pkg/logger"
 	"github.com/evanxzj/go-gin-example/pkg/setting"
@@ -15,9 +16,16 @@ import (
 )
 
 func GetArticle(c *gin.Context) {
+	appG := app.Gin{C: c}
 	id := com.StrTo(c.Param("id")).MustInt()
 	valid := validation.Validation{}
 	valid.Min(id, 1, "id").Message("ID必须大于0")
+
+	if valid.HasErrors() {
+		app.MarkError(valid.Errors)
+		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		return
+	}
 
 	code := e.INVALID_PARAMS
 	var data interface{}
@@ -27,10 +35,6 @@ func GetArticle(c *gin.Context) {
 			code = e.SUCCESS
 		} else {
 			code = e.ERROR_NOT_EXIST_ARTICLE
-		}
-	} else {
-		for _, err := range valid.Errors {
-			logger.Error(err.Key, err.Message)
 		}
 	}
 
