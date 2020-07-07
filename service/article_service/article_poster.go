@@ -4,10 +4,13 @@ import (
 	"image"
 	"image/draw"
 	"image/jpeg"
+	"io/ioutil"
 	"os"
 
 	"github.com/evanxzj/go-gin-example/pkg/file"
 	"github.com/evanxzj/go-gin-example/pkg/qrcode"
+	"github.com/evanxzj/go-gin-example/pkg/setting"
+	"github.com/golang/freetype"
 )
 
 type ArticlePoster struct {
@@ -114,8 +117,81 @@ func (a *ArticlePosterBg) Generate() (string, string, error) {
 		draw.Draw(jpg, jpg.Bounds(), bgImage, bgImage.Bounds().Min, draw.Over)
 		draw.Draw(jpg, jpg.Bounds(), qrImage, qrImage.Bounds().Min.Sub(image.Pt(a.Pt.X, a.Pt.Y)), draw.Over)
 
-		jpeg.Encode(mergedF, jpg, nil)
+		err = a.DrawPoster(&DrawText{
+			JPG:    jpg,
+			Merged: mergedF,
+
+			Title: "EvanXzj GitHub Home Page",
+			X0:    80,
+			Y0:    160,
+			Size0: 42,
+
+			SubTitle: "---ChuiDylan",
+			X1:       320,
+			Y1:       220,
+			Size1:    36,
+		}, "msyhbd.ttc")
+
+		if err != nil {
+			return "", "", err
+		}
+		// jpeg.Encode(mergedF, jpg, nil)
 	}
 
 	return fileName, path, nil
+}
+
+type DrawText struct {
+	JPG    draw.Image
+	Merged *os.File
+
+	Title string
+	X0    int
+	Y0    int
+	Size0 float64
+
+	SubTitle string
+	X1       int
+	Y1       int
+	Size1    float64
+}
+
+func (a *ArticlePosterBg) DrawPoster(d *DrawText, fontName string) error {
+	fontSource := setting.AppSetting.RuntimeRootPath + setting.AppSetting.FontSavePath + fontName
+	fontSourceBytes, err := ioutil.ReadFile(fontSource)
+	if err != nil {
+		return err
+	}
+
+	trueTypeFont, err := freetype.ParseFont(fontSourceBytes)
+	if err != nil {
+		return err
+	}
+
+	fc := freetype.NewContext()
+	fc.SetDPI(72)
+	fc.SetFont(trueTypeFont)
+	fc.SetFontSize(d.Size0)
+	fc.SetClip(d.JPG.Bounds())
+	fc.SetDst(d.JPG)
+	fc.SetSrc(image.Black)
+
+	pt := freetype.Pt(d.X0, d.Y0)
+	_, err = fc.DrawString(d.Title, pt)
+	if err != nil {
+		return err
+	}
+
+	fc.SetFontSize(d.Size1)
+	_, err = fc.DrawString(d.SubTitle, freetype.Pt(d.X1, d.Y1))
+	if err != nil {
+		return err
+	}
+
+	err = jpeg.Encode(d.Merged, d.JPG, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
