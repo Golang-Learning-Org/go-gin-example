@@ -30,7 +30,7 @@ func openLogFile(filename, filePath string) (*os.File, error) {
 		return nil, fmt.Errorf("file.CheckPermission Permission denied src: %s", src)
 	}
 
-	err = file.IsNotExistMkdir(src)
+	err = file.IsNotExistMkDir(src)
 	if err != nil {
 		return nil, fmt.Errorf("file.IsNotExistMkDir src: %s, err: %v", src, err)
 	}

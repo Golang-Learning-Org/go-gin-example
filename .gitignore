@@ -21,3 +21,6 @@ main
 go-gin-example
 runtime/upload/images
 runtime/export/*.xlsx
+runtime/qrcode/*
+!runtime/qrcode/.gitkeep
+!runtime/qrcode/bg.jpg

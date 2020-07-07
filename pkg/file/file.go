@@ -1,6 +1,7 @@
 package file
 
 import (
+	"fmt"
 	"io/ioutil"
 	"mime/multipart"
 	"os"
@@ -27,7 +28,7 @@ func CheckPermission(src string) bool {
 	return os.IsPermission(err)
 }
 
-func IsNotExistMkdir(src string) error {
+func IsNotExistMkDir(src string) error {
 	if CheckNotExist(src) {
 		if err := MkDir(src); err != nil {
 			return err
@@ -50,6 +51,31 @@ func Open(filePath string, flag int, perm os.FileMode) (*os.File, error) {
 	f, err := os.OpenFile(filePath, flag, perm)
 	if err != nil {
 		return nil, err
+	}
+
+	return f, nil
+}
+
+func MustOpen(filename, filePath string) (*os.File, error) {
+	dir, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
+	src := dir + "/" + filePath
+	perm := CheckPermission(src)
+	if perm == true {
+		return nil, fmt.Errorf("file.CheckPermission Permission denied src: %s", src)
+	}
+
+	err = IsNotExistMkDir(src)
+	if err != nil {
+		return nil, fmt.Errorf("file.IsNotExistMkDir src: %s, err: %v", src, err)
+	}
+
+	f, err := Open(src+filename, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0644)
+	if err != nil {
+		return nil, fmt.Errorf("Fail to OpenFile :%v", err)
 	}
 
 	return f, nil

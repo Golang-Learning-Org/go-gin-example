@@ -62,7 +62,7 @@ func CheckImage(src string) error {
 		return fmt.Errorf("os.Getwd err: %v", err)
 	}
 
-	err = file.IsNotExistMkdir(dir + "/" + src)
+	err = file.IsNotExistMkDir(dir + "/" + src)
 	if err != nil {
 		return fmt.Errorf("file.IsNotExistMkDir err: %v", err)
 	}

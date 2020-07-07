@@ -16,6 +16,7 @@ var MsgFlags = map[int]string{
 	ERROR_UPLOAD_SAVE_IMAGE_FAIL:    "保存图片失败",
 	ERROR_EXPORT_TAG_FAIL:           "导出标签失败",
 	ERROR_IMPORT_TAG_FAIL:           "导入标签失败",
+	ERROR_GEN_ARTICLE_POSTER_FAIL:   "生成文章海报失败",
 }
 
 func GetMsg(code int) string {
